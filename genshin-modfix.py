@@ -13,12 +13,13 @@ v47_hash = {
     "b043715a": "bad2731b",
     "a8191396": "e543af5d",
     "00741928": "c814ad67",
-    "d75308d8": "d5ad8084"
+    "d75308d8": "d5ad8084",
+    "8991360f": "c814ad67"
 }
 
 
 def main():
-    for e in scan_ini("D:/game/原神 mod/需要修复的 MOD/莫娜-全裸"):
+    for e in scan_ini("."):
         print("open", e)
         fs = open(e, "r")
         ini_content: list[str] = fs.readlines()
