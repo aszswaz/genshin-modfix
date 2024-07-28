@@ -20,13 +20,12 @@ v47_hash = {
 
 def main():
     for e in scan_ini("."):
-        print("open", e)
         fs = open(e, "r")
         ini_content: list[str] = fs.readlines()
         fs.close()
 
-        mod_fix(ini_content, v46_hash)
-        mod_fix(ini_content, v47_hash)
+        mod_fix(e, ini_content, v46_hash)
+        mod_fix(e, ini_content, v47_hash)
 
         fs = open(e, "w")
         fs.writelines(ini_content)
@@ -34,7 +33,7 @@ def main():
     pass
 
 
-def mod_fix(ini_content: list[str], hash_map: dict[str, str]):
+def mod_fix(file_name: str, ini_content: list[str], hash_map: dict[str, str]):
     for line_index in range(len(ini_content)):
         line = ini_content[line_index]
         index = line.find("=")
@@ -42,12 +41,12 @@ def mod_fix(ini_content: list[str], hash_map: dict[str, str]):
             continue
         key = line[0: index].strip().lower()
         value = line[index + 1: len(line)].strip().lower()
+
         # 将旧 hash 替换为新 hash
-        #
         if key == "hash" and value in hash_map.keys():
             new_hash: str = hash_map[value]
             new_hash = new_hash.strip()
-            print(f"{value} -> {new_hash}")
+            print(f"{file_name}: {value} -> {new_hash}")
             ini_content[line_index] = f"{key} = {new_hash}\n"
             pass
     return
