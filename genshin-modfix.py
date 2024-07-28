@@ -51,6 +51,7 @@ def main():
 
 def mod_fix(ini_content: list[str], hash_map: dict[str, str]):
     logs: list[str] = list()
+    result = False
 
     for line_index in range(len(ini_content)):
         line = ini_content[line_index]
@@ -65,8 +66,10 @@ def mod_fix(ini_content: list[str], hash_map: dict[str, str]):
             new_hash = new_hash.strip()
             logs.append(f"{value} -> {new_hash}")
             ini_content[line_index] = f"{key} = {new_hash}\n"
-            return True, logs
-    return False, logs
+            result = True
+            pass
+        pass
+    return result, logs
 
 
 def scan_ini(directory) -> list[str]:
