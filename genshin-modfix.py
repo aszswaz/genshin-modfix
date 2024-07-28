@@ -17,23 +17,41 @@ v47_hash = {
     "8991360f": "c814ad67"
 }
 
+all_hash = [v46_hash, v47_hash]
+
 
 def main():
-    for e in scan_ini("."):
-        fs = open(e, "r")
+    for ini_file in scan_ini("."):
+        modify = False
+
+        fs = open(ini_file, "r")
         ini_content: list[str] = fs.readlines()
         fs.close()
 
-        mod_fix(e, ini_content, v46_hash)
-        mod_fix(e, ini_content, v47_hash)
+        for item_hash in all_hash:
+            result, logs = mod_fix(ini_content, item_hash)
+            if result:
+                modify = True
+                print(f"{ini_file}:")
+                for item_log in logs:
+                    print(item_log)
+                    pass
+                pass
+            pass
 
-        fs = open(e, "w")
-        fs.writelines(ini_content)
+        if modify:
+            fs = open(ini_file, "w")
+            fs.writelines(ini_content)
+            fs.close()
+            pass
+            
     input("按任意键退出程序")
     pass
 
 
-def mod_fix(file_name: str, ini_content: list[str], hash_map: dict[str, str]):
+def mod_fix(ini_content: list[str], hash_map: dict[str, str]):
+    logs: list[str] = list()
+
     for line_index in range(len(ini_content)):
         line = ini_content[line_index]
         index = line.find("=")
@@ -41,15 +59,14 @@ def mod_fix(file_name: str, ini_content: list[str], hash_map: dict[str, str]):
             continue
         key = line[0: index].strip().lower()
         value = line[index + 1: len(line)].strip().lower()
-
         # 将旧 hash 替换为新 hash
         if key == "hash" and value in hash_map.keys():
             new_hash: str = hash_map[value]
             new_hash = new_hash.strip()
-            print(f"{file_name}: {value} -> {new_hash}")
+            logs.append(f"{value} -> {new_hash}")
             ini_content[line_index] = f"{key} = {new_hash}\n"
-            pass
-    return
+            return True, logs
+    return False, logs
 
 
 def scan_ini(directory) -> list[str]:
